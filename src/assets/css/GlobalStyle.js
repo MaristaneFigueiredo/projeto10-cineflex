@@ -71,27 +71,29 @@ const Container = styled.div`
 `
 
 const Botao = styled.button`
-background-color: #E8833A ;
-width: ${props => props.width};
-height: ${props => props.height};
-color: #FFF;
-font-family: 'Roboto';
-font-size: 18px;
-border: none;
-letter-spacing: 0.02em;
+	background-color: #E8833A ;
+	width: ${props => props.width};
+	height: ${props => props.height};
+	color: #FFF;
+	font-family: 'Roboto';
+	font-size: 18px;
+	border: none;
+	letter-spacing: 0.02em;
+	margin-right:${props => props.marginRight} ;
 
 
 `
 
 const Paragrafo = styled.p`
-font-size: 24px;
-font-weight: 400;
-font-family: 'Roboto';
-letter-spacing: 0.04em;
-display: flex;
-justify-content: center;
-align-items: center;
-padding: 50px;
+	font-size: 24px;
+	font-weight: 400;
+	font-family: 'Roboto';
+	letter-spacing: 0.04em;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+/* padding: 50px; */
+	padding: 40px;
 
 `
 

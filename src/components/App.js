@@ -1,7 +1,7 @@
 
 import { GlobalStyle } from "../assets/css/GlobalStyle";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { Link } from "react-router-dom";
+
 
 
 import PrincipalPage from "./PrincipalPage";
@@ -22,7 +22,8 @@ export default function App() {
                 <Route path="/" element={<PrincipalPage/>} />
                 {/* <Route path="/filmes" element={<FilmesPage />} /> */}
                 <Route path="/rodape" element={<RodapePage />} />
-                <Route path="/sessoes" element={<SessoesPage />} />
+                <Route path="/sessoes/:idFilme" element={<SessoesPage />} />
+                {/* <Route path="/sessoes" element={<SessoesPage />} /> */}
                 <Route path="/assentos" element={<AssentosPage />} />
                 <Route path="/assento" element={<AssentoPage />} />
                 <Route path="/pedido" element={<PedidoPage />} />
