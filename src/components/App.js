@@ -9,7 +9,6 @@ import PrincipalPage from "./PrincipalPage";
 import RodapePage from "./RodapePage";
 import SessoesPage from "./SessoesPage";
 import AssentosPage from "./AssentosPage";
-import AssentoPage from "./AssentoPage";
 import PedidoPage from "./PedidoPage";
 
 export default function App() {
@@ -19,13 +18,12 @@ export default function App() {
             
             <Routes>
                 {/* Cada rota tem que estar em Route */}
-                <Route path="/" element={<PrincipalPage/>} />
-                {/* <Route path="/filmes" element={<FilmesPage />} /> */}
+                <Route path="/" element={<PrincipalPage/>} />               
                 <Route path="/rodape" element={<RodapePage />} />
-                <Route path="/sessoes/:idFilme" element={<SessoesPage />} />
-                {/* <Route path="/sessoes" element={<SessoesPage />} /> */}
+                <Route path="/sessoes/:idFilme" element={<SessoesPage />} />             
                 <Route path="/assentos" element={<AssentosPage />} />
-                <Route path="/assento" element={<AssentoPage />} />
+                <Route path="/assentos/:idSessao" element={<AssentosPage />} />
+                
                 <Route path="/pedido" element={<PedidoPage />} />
 
             </Routes>

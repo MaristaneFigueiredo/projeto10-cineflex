@@ -80,6 +80,7 @@ const Botao = styled.button`
 	border: none;
 	letter-spacing: 0.02em;
 	margin-right:${props => props.marginRight} ;
+	margin-bottom:15px;
 
 
 `
@@ -92,8 +93,7 @@ const Paragrafo = styled.p`
 	display: flex;
 	justify-content: center;
 	align-items: center;
-/* padding: 50px; */
-	padding: 40px;
+	 margin: 40px 10px; 
 
 `
 

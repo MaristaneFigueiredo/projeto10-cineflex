@@ -92,13 +92,15 @@ const FilmesContainer = styled.ul`
     display:flex;
     flex-wrap: wrap;
     justify-content: space-evenly;
-
+    
     img {
     height: 193px ;
     width: 129px;
     border: 8px solid #FFF;
     box-shadow: 0px 2px 4px 2px rgba(0, 0, 0, 0.1);
     border-radius: 3px;
+    cursor: pointer;
+
   
     
  }

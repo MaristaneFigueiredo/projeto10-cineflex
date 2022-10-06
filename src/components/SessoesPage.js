@@ -3,7 +3,7 @@ import { Container, Paragrafo, Botao } from "../assets/css/GlobalStyle";
 
 import Cabecalho from "./Cabecalho";
 
-import { SESSOES } from "./dados"
+
 
 import axios from "axios";
 import { Link, useParams } from "react-router-dom";
@@ -14,7 +14,7 @@ export default function SessoesPage() {
     const { idFilme } = useParams(); 
     const [sessoes, setSessoes] = useState(undefined) 
 
-    // OPCIONAL => Se eu quiser mostrar um erro na tela caso a requisição caia no catch
+ 
     const [error, setError] = useState(false)
   
     useEffect(() => {
@@ -22,14 +22,13 @@ export default function SessoesPage() {
       const requisicaoSessoes = axios.get(URL)
   
       requisicaoSessoes.then((res) => {
-        console.log(res.data)
+        // console.log(res.data)
         setSessoes(res.data) 
       })
   
       requisicaoSessoes.catch((err) => {
-        // console.log(err.response.data)
-    
-        setError(true) // mas seto o erro como true para mostrar a mensagem de erro
+        // console.log(err.response.data)    
+        setError(true) 
       })
     }, [])
   
@@ -44,37 +43,33 @@ export default function SessoesPage() {
       return <div>Carregando...</div>
     }
    
-    // sessoes.forEach(element => {
-    //     console.log(' element.id', element.id);
-    // });
+
+   
     
 
-    // function imprimir(sessao) {
-    //     console.log(sessao.id,sessao.weekday, sessao.date, sessao.showtimes );
-    // }
     
-    // sessoes.days.forEach(imprimir);
+    function listarSessoes(sessao) {
 
-    let lastDate
-    const layoutSessao = []
+        // console.log('listarSessoes =', sessao)
+        return (
+            <div key={sessao.id}>
+                <Texto>{`${sessao.weekday} - ${sessao.date}`}</Texto>
+                {sessao.showtimes.map((horario) => {
+                    // console.log('horario =', horario)
+                    return (
+                        <Link to={`/assentos/${horario.id}`}>
+                        {/* <Link to={`/assentos`}> */}
+                             <Botao key={horario.id} width="82px" height="43px" marginRight="8px">{horario.name}</Botao>
+                        </Link>
 
-    // sessoes.days.forEach((sessao) => {
-    //     console.log('oi',sessao.id,sessao.weekday, sessao.date, sessao.showtimes )
-    // });
+                    )
+                } )}
+ 
+            </div>
+        )
+    }
 
-
-    sessoes.days.forEach((sessao) => {
-        console.log('oi',sessao.id,sessao.weekday, sessao.date, sessao.showtimes )
-
-        if (sessao.date !== lastDate) {
-            // layoutSessao.push(prod.category)
-            layoutSessao.push(prod.category)
-            // layoutSessao.push(<ProductsCategory key={prod.category} category={prod.category} />)
-            lastDate = sessao.date
-
-        }
-
-    });
+    
 
 
 
@@ -86,26 +81,19 @@ export default function SessoesPage() {
         <Container>
             <Paragrafo>Selecione o horário</Paragrafo>
 
-            {/* {sessoes.map((item) => <Filmes key={filme.id} id={filme.id} title={filme.title} url={filme.posterURL} />)} */}
+            {sessoes.days.map( (sessao) => listarSessoes(sessao))}
 
-            {/* {sessoes.map((sessao, i) => {
-                sessao.days.weekday
-                sessao.days.date
-                sessao.days.showtimes.name
-            }
-            
-            )} */}
-
-            <Texto>Quinta-feira - 24/06/2021</Texto>
+            {/* <Texto>Quinta-feira - 24/06/2021</Texto>
             <Botao width="82px" height="43px" marginRight="8px">15:00</Botao>
-            <Botao width="82px" height="43px" marginRight="8px">19:00</Botao>      
+            <Botao width="82px" height="43px" marginRight="8px">19:00</Botao>       */}
             
         </Container>
 
-        <Footer display="none">
-            <img src="https://image.tmdb.org/t/p/w500/7D430eqZj8y3oVkLFfsWXGRcpEG.jpg" alt="imagem filme"/>
+        <Footer display="none">           
+            <img src={sessoes.posterURL} alt="imagem filme"/>
             <div>
-                <h1>Enola Holmes</h1>
+                
+                <h1>{sessoes.title}</h1>
                 <p> Quinta-feira - 15:00</p>
             </div>
         </Footer>
@@ -122,7 +110,7 @@ const Texto = styled.h1 `
     line-height: 23px;
     letter-spacing: 0.02em;
     color: #293845;
-    margin-top: 22px;
+    margin-top: 10px;
     margin-bottom: 22px;
 `
 
@@ -134,7 +122,8 @@ const Footer =styled.div `
     border: 1px solid #9EADBA;
     display: flex;  
     align-items: center;
-    /* position: absolute; */
+    position: fixed;
+    bottom: 0;   
     img{
         width: 64px;
         height: 89px;         
@@ -173,11 +162,6 @@ const Footer =styled.div `
         color: #293845;
         
         
-    }
-
-
-    
-
-    
+    }    
 
 `
