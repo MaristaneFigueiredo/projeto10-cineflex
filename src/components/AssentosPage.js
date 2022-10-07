@@ -1,16 +1,21 @@
 import styled from "styled-components"
 import axios from "axios";
-import { Link, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react"
 import Cabecalho from "./Cabecalho";
 import { Container, Paragrafo, Botao } from "../assets/css/GlobalStyle";
 
-import {ASSENTOS} from "./dados";
+
 
 export default function AssentosPage() {
-    const { idSessao } = useParams(); 
-    const [assentos, setAssentos] = useState(undefined) 
+    const [ids, setIds] = useState([]);
+    const [ingressos, setIngressos] = useState([])
+    const [name, setName] = useState("");
+    const [cpf, setCpf] = useState("");
+    const navigate = useNavigate()
 
+    const { idSessao } = useParams();
+    const [assentos, setAssentos] = useState(undefined)
     const [error, setError] = useState(false)
 
     useEffect(() => {
@@ -18,37 +23,126 @@ export default function AssentosPage() {
         const requisicaoAssentos = axios.get(URL)
 
         requisicaoAssentos.then((res) => {
-          console.log('resposta assentos',res.data)
-          setAssentos(res.data) 
+            console.log('resposta assentos', res.data)
+            setAssentos(res.data)
         })
 
         requisicaoAssentos.catch((err) => {
-          // console.log(err.response.data)    
-          setError(true) 
+            // console.log(err.response.data)    
+            setError(true)
         })
-      }, [])
+    }, [])
 
 
 
-      if (error === true) {
+    if (error === true) {
         return <div>Erro na requisição! Tente de novo</div>
-      }
+    }
 
 
-      if (!error && assentos === undefined) {
+    if (!error && assentos === undefined) {
         return <div>Carregando...</div>
-      }
+    }
+
+
+    function adicionarAssentos(assento) {
+        if (assento.isAvailable === false) {
+            alert("Perdeu a vez, assento indisponível!")
+            return;
+        }
+
+        let arrIds = [...ids]
+        let arrNum = [...ingressos]
+
+     
+        if (assento.isAvailable === true && !ids.includes(assento.id)) {  // estou testando se o assento está disponível e não selecionado, salvar no array
+            arrIds = [...ids, assento.id]
+            arrNum = [...ingressos, assento.name]
+        } else {
+            // console.log('passei no else')
+            arrIds = arrIds.filter(
+                (a) => {
+                    if (a !== assento.id) {                 
+                        return a;
+                    }
+                }
+            )
+
+            arrNum = arrNum.filter(
+                (a) => {
+                    if (a !== assento.name) {                 
+                        return a;
+                    }
+                }
+            )
+
+
+        }
+      
+        setIds(arrIds)
+        setIngressos(arrNum)
+        console.log('arrIds', arrIds)
+        console.log('arrNum', arrNum)
+        
+    }
 
     function listarAssentos(assento) {
         // console.log(assento.name)
-        return(
-            <>                            
-                <BotaoAssento key={assento.name} CorBotao="#C3CFD9" CorBorda="#808F9D">                  
+        return (
+            <div key={assento.name} data-identifier="seat">
+
+                {/* <BotaoAssento onClick={() =>adicionarAssentos(assento)} key={assento.name} 
+                  CorBotao={ (assento.isAvailable===true && !ids.includes(assento.id)) ? "#C3CFD9": (assento.isAvailable===true && ids.includes(assento.id)) ? "#1AAE9E" : "#FBE192" }                  
+                  CorBorda={ (assento.isAvailable===true && !ids.includes(assento.id)) ? "#808F9D": (assento.isAvailable===true && ids.includes(assento.id)) ? "#0E7D71" : "#F7C52B" }>  
                     {(assento.name.length === 2) ? assento.name :`0${assento.name}`}                  
-                </BotaoAssento>
-            </>
+                </BotaoAssento> */}
+
+                {(assento.isAvailable && ids.includes(assento.id)) ? 
+                    <BotaoAssento data-identifier="seat-selected-subtitle" onClick={() => adicionarAssentos(assento)} CorBotao="#1AAE9E" CorBorda="#0E7D71">                        
+                        {(assento.name.length === 2) ? assento.name :`0${assento.name}`}         
+                    </BotaoAssento>
+                    : (assento.isAvailable && !ids.includes(assento.id)) ? 
+                    <BotaoAssento data-identifier="seat-available-subtitle" onClick={() => adicionarAssentos(assento)} CorBotao="#C3CFD9" CorBorda="#808F9D">                  
+                        {(assento.name.length === 2) ? assento.name :`0${assento.name}`}         
+                    </BotaoAssento>
+                        //Indisponível
+                    : <BotaoAssento data-identifier="seat-unavailable-subtitle" onClick={() => adicionarAssentos(assento)} CorBotao="#FBE192" CorBorda="#F7C52B">                       
+                            {(assento.name.length === 2) ? assento.name :`0${assento.name}`}         
+                      </BotaoAssento>}
+
+            </div>
         )
     }
+
+    function adicionarReserva(event) {
+        event.preventDefault() // não deixa o formulário submeter limpando automaticamente a tela, o que acarretaria apagar os estados e como eu mandaria isso para o servidor
+
+        const URL = "https://mock-api.driven.com.br/api/v5/cineflex/seats/book-many"
+
+        const body = {
+            ids: ids,
+            name: name,
+            cpf: cpf
+        }//corpo da minha requisicao
+
+        const promessa = axios.post(URL, body)
+
+        promessa.then(() => {
+            alert("reserva feita")
+            //mudar de página
+            //  navigate("/") // tela inicial
+            navigate("/sucesso", { state: { ids, ingressos, name, cpf, filme: assentos.movie.title, dia: assentos.day.weekday, data: assentos.day.date, hora:assentos.name} }) 
+
+        })
+
+
+        promessa.catch((erro) =>
+            console.log(erro.response.data)
+
+        );
+    }
+
+
 
     return (
         <>
@@ -57,44 +151,64 @@ export default function AssentosPage() {
                 <Paragrafo>Selecione o(s) assento(s)</Paragrafo>
 
                 <Assento>
-                    {assentos.seats.map( (assento) => listarAssentos(assento))}                     
+                    {assentos.seats.map((assento) => listarAssentos(assento))}
                 </Assento>
 
                 <ContainerLegendaAssento>
                     <div>
-                        <LegendaAssento CorFundo="#1AAE9E" CorBorda="#0E7D71"/>
+                        <LegendaAssento CorFundo="#1AAE9E" CorBorda="#0E7D71" />
                         <p>Selecionado</p>
                     </div>
                     <div>
-                        <LegendaAssento CorFundo="#C3CFD9" CorBorda="#808F9D"/>
+                        <LegendaAssento CorFundo="#C3CFD9" CorBorda="#808F9D" />
                         <p>Disponível</p>
                     </div>
                     <div>
-                        <LegendaAssento CorFundo="#FBE192" CorBorda="#F7C52B"/>
+                        <LegendaAssento CorFundo="#FBE192" CorBorda="#F7C52B" />
                         <p>Indisponível</p>
                     </div>
                 </ContainerLegendaAssento>
 
-                <FormularioCompra>
-                    <label htmlFor="comprador">Nome do comprador:</label>
-                    <span><input type="text" name="comprador" placeholder="Digite seu nome..."/></span>
+                <form onSubmit={adicionarReserva}>
 
-                    <label htmlFor="comprador">CPF do comprador:</label>
-                    <span><input type="text" name="comprador" placeholder="Digite seu CPF..."/></span>
-                </FormularioCompra>
-                <BotaoCentralizado>
-                    <Botao width="225px" height="42px">Reservar assento(s)</Botao>
+                    <FormularioCompra>
+                        <label forHTML="comprador">Nome do comprador:</label>
+                        <span><input
+                            data-identifier="buyer-name-input"
+                            id="comprador"
+                            onChange={e => setName(e.target.value)}
+                            value={name}
+                            type="text"
+                            placeholder="Digite seu nome..."
+                            required
+                        /></span>
 
-                </BotaoCentralizado>
+                        <label forHTML="cpf">CPF do comprador:</label>
+                        <span><input
+                            data-identifier="buyer-cpf-input"
+                            id="cpf"
+                            onChange={e => setCpf(e.target.value)}
+                            value={cpf}
+                            type="text"
+                            placeholder="Digite seu CPF..."
+                            required
+                        /></span>
+                    </FormularioCompra>
+
+                    <BotaoCentralizado>
+                        <Botao data-identifier="reservation-btn" type="submit" width="225px" height="42px">Reservar assento(s)</Botao>
+                    </BotaoCentralizado>
+
+                </form>
 
             </Container>
 
             <Footer display="display">
-                <img src={assentos.movie.posterURL} alt="imagem filme"/>
-                
-                <div>
-                    <h1>{assentos.movie.title}</h1> 
-                    <p> {`${assentos.day.weekday} - ${assentos.day.date}`}</p>                   
+                <img data-identifier="movie-img-preview" src={assentos.movie.posterURL} alt="imagem filme" />
+
+                <div data-identifier="movie-and-session-infos-preview">
+                    <h1>{assentos.movie.title}</h1>
+                    <p> {`${assentos.day.weekday} - ${assentos.day.date} - ${assentos.name}`}</p>
                 </div>
             </Footer>
 
@@ -113,13 +227,16 @@ const Assento = styled.div`
 `
 
 const BotaoAssento = styled.button`
-    background: #C3CFD9;
-    border: 1px solid #808F9D;
+
+    background: ${props => props.CorBotao};
+    border: 1px solid;
+    border-color:${props => props.CorBorda};
     border-radius: 12px;
     width: 26px;
     height: 26px;
     align-items: center;
     margin-bottom: 7px;
+    
     
 `
 const ContainerLegendaAssento = styled.div`
@@ -158,7 +275,7 @@ display: flex;
 flex-direction: column;
 gap: 5px;
 margin-top: 42px;
-margin-bottom: 40px;
+margin-bottom: 15px;
 
     label {
         color: #293845;
@@ -188,7 +305,7 @@ margin-bottom: 40px;
     }
 `
 
-const Footer = styled.div `
+const Footer = styled.div`
     width: 100vw;
     height: 117px;
     background-color: #DFE6ED;    
@@ -238,4 +355,3 @@ const Footer = styled.div `
     }    
 
 `
-

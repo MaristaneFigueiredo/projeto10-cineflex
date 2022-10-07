@@ -81,6 +81,7 @@ const Botao = styled.button`
 	letter-spacing: 0.02em;
 	margin-right:${props => props.marginRight} ;
 	margin-bottom:15px;
+	cursor: pointer;
 
 
 `
@@ -93,7 +94,29 @@ const Paragrafo = styled.p`
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	 margin: 40px 10px; 
+
+	
+	
+    margin: 40px 10px; 
+
+
+
+`
+
+
+const P = styled.p`
+font-size: 24px;
+font-weight: 400;
+font-family: 'Roboto';
+letter-spacing: 0.04em;
+display: flex;
+justify-content: ${props =>props.alinhamento};
+align-items: ${props =>props.alinhamento};
+margin-bottom: ${props => props.espacamentoBottom};
+color: ${props => props.corTexto};
+font-weight: ${props => props.estiloFonte};
+
+margin-top: ${props => props.espacamentoTop};
 
 `
 
@@ -103,8 +126,7 @@ export {
     GlobalStyle,
     Container,
 	Paragrafo,
-	Botao
-
-    
+	Botao,
+	P    
 
 }

@@ -11,7 +11,7 @@ export default function Filmes({id, title, url}) {
    
 
     return (              
-            <Link to={`/sessoes/${id}`}>
+            <Link data-identifier="movie-outdoor" to={`/sessoes/${id}`}>
                 <li><img src={url} /></li>          
             </Link>
     );

@@ -52,14 +52,13 @@ export default function SessoesPage() {
 
         // console.log('listarSessoes =', sessao)
         return (
-            <div key={sessao.id}>
+            <div key={sessao.id} >                
                 <Texto>{`${sessao.weekday} - ${sessao.date}`}</Texto>
                 {sessao.showtimes.map((horario) => {
                     // console.log('horario =', horario)
                     return (
-                        <Link to={`/assentos/${horario.id}`}>
-                        {/* <Link to={`/assentos`}> */}
-                             <Botao key={horario.id} width="82px" height="43px" marginRight="8px">{horario.name}</Botao>
+                        <Link to={`/assentos/${horario.id}`}>                       
+                             <Botao data-identifier="hour-minute-btn" key={horario.id} width="82px" height="43px" marginRight="8px">{horario.name}</Botao>
                         </Link>
 
                     )
@@ -82,16 +81,13 @@ export default function SessoesPage() {
             <Paragrafo>Selecione o horário</Paragrafo>
 
             {sessoes.days.map( (sessao) => listarSessoes(sessao))}
-
-            {/* <Texto>Quinta-feira - 24/06/2021</Texto>
-            <Botao width="82px" height="43px" marginRight="8px">15:00</Botao>
-            <Botao width="82px" height="43px" marginRight="8px">19:00</Botao>       */}
+           
             
         </Container>
 
         <Footer display="none">           
-            <img src={sessoes.posterURL} alt="imagem filme"/>
-            <div>
+            <img data-identifier="movie-img-preview" src={sessoes.posterURL} alt="imagem filme"/>
+            <div data-identifier="movie-and-session-infos-preview">
                 
                 <h1>{sessoes.title}</h1>
                 <p> Quinta-feira - 15:00</p>

@@ -24,7 +24,7 @@ export default function App() {
                 <Route path="/assentos" element={<AssentosPage />} />
                 <Route path="/assentos/:idSessao" element={<AssentosPage />} />
                 
-                <Route path="/pedido" element={<PedidoPage />} />
+                <Route path="/sucesso" element={<PedidoPage />} />
 
             </Routes>
         </BrowserRouter>
